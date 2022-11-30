@@ -4,68 +4,87 @@ import java.util.HashMap;
 public class ExpensesManager {
     HashMap<String, ArrayList<Double>> expensesByCategories;
 
-    // Замените на таблицу с именем expensesByCategories
-
     ExpensesManager() {
         expensesByCategories = new HashMap<>();
-        // Создайте таблицу
     }
-    // Добавьте в метод ещё один параметр — category
-    double saveExpense(double moneyBeforeSalary, double expense, String category) {
+
+    double saveExpense(double moneyBeforeSalary, String category, double expense) {
         moneyBeforeSalary = moneyBeforeSalary - expense;
         System.out.println("Значение сохранено! Ваш текущий баланс в рублях: " + moneyBeforeSalary);
-        // Замените на работу с таблицей
-        if (expensesByCategories.containsKey(category)) {  // Проверьте наличие категории
-            if (expensesByCategories.containsKey(category)) {
-                ArrayList<Double> expenses = expensesByCategories.get(category);
-                expenses.add(expense);
-            } else {
-                ArrayList<Double> newExpenses = new ArrayList<>();
-                newExpenses.add(expense);// Создайте новый список трат и добавьте в него сумму
-                expensesByCategories.put(category, newExpenses); // Сохраните категорию и новый список трат в хеш-таблицу
-            }
-            if (moneyBeforeSalary < 1000) {
-                System.out.println("На вашем счету осталось совсем немного. Стоит начать экономить!");
-            }
+        if (expensesByCategories.containsKey(category)) {
+            ArrayList<Double> expenses = expensesByCategories.get(category);
+            expenses.add(expense);
+        } else {
+            ArrayList<Double> expenses = new ArrayList<>();
+            expenses.add(expense);
+            expensesByCategories.put(category, expenses);
+        }
+        if (moneyBeforeSalary < 1000) {
+            System.out.println("На вашем счету осталось совсем немного. Стоит начать экономить!");
         }
         return moneyBeforeSalary;
     }
 
     void printAllExpensesByCategories() {
-        // Замените логику для работы с таблицами
-
         for (String category : expensesByCategories.keySet()) {
             System.out.println(category);
-
-            for (Double expense : expensesByCategories.get(category)) {
+            ArrayList<Double> expenses = expensesByCategories.get(category);
+            for (Double expense : expenses) {
                 System.out.println(expense);
-
             }
         }
     }
 
-    // Метод должен принимать название категории и называться findMaxExpenseInCategory
     double findMaxExpenseInCategory(String category) {
         double maxExpense = 0;
-        /* Замените логику для работы с таблицами
-        Если категория есть, то ищем максмальную трату.
-        Иначе печатаем "Такой категории пока нет." */
         if (expensesByCategories.containsKey(category)) {
-            for (String categor : expensesByCategories.keySet()) {
-                for (Double expense : expensesByCategories.get(category)) {
-                    if (expense > maxExpense) {
-                        maxExpense = expense;
-                        category = categor;
-                    }
+            ArrayList<Double> expenses = expensesByCategories.get(category);
+            for (Double expense : expenses) {
+                if (expense > maxExpense) {
+                    maxExpense = expense;
                 }
             }
+        } else {
+            System.out.println("Такой категории пока нет.");
         }
         return maxExpense;
     }
 
     void removeAllExpenses() {
-        expensesByCategories.clear(); // Таблица называется иначе
+        expensesByCategories.clear();
         System.out.println("Траты удалены.");
     }
-}
 
+    double getExpensesSum() {
+        double total = 0;
+        for (String categor : expensesByCategories.keySet()) {
+            for (Double expense : expensesByCategories.get(categor)) {
+                total += expense.doubleValue();
+            }
+        }
+        return total;
+    } // Напишите метод для получения суммы всех трат
+
+    void removeExpenseCategory(String category) {
+        if (expensesByCategories.containsKey(category)) {
+            expensesByCategories.remove(category);
+        }
+    } // Напишите метод для удаления категории
+
+    String getMaxOrderCustomerName() {
+        double maxCategorySum = 0;
+        String maxCategoryName = "";
+        for (String category : expensesByCategories.keySet()) {    //В цикле перебираем ключи
+            double sum = 0;
+            for (Double expenses : expensesByCategories.get(category)){
+                sum+= expenses.doubleValue();
+            }
+
+            if (sum > maxCategorySum) {
+                maxCategorySum = sum;
+                maxCategoryName = category;
+            }
+        }
+        return maxCategoryName;
+    }
+}
